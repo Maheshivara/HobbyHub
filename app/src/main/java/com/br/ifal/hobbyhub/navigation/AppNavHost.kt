@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.br.ifal.hobbyhub.screens.ClassicalMusicListScreen
 import com.br.ifal.hobbyhub.screens.FavoriteMusicScreen
 import com.br.ifal.hobbyhub.screens.HomeScreen
 import com.br.ifal.hobbyhub.screens.MusicSearchScreen
@@ -24,6 +25,10 @@ fun AppNavHost(navController: NavHostController) {
 
         composable<RoutesNames.FavoriteMusicScreen> {
             FavoriteMusicScreen(navController)
+        }
+
+        composable<RoutesNames.ClassicalMusicListScreen> {
+            ClassicalMusicListScreen(navController)
         }
     }
 
