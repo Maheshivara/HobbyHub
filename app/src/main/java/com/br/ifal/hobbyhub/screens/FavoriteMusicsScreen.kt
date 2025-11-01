@@ -1,5 +1,6 @@
 package com.br.ifal.hobbyhub.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,7 +37,7 @@ import coil3.compose.AsyncImage
 import com.br.ifal.hobbyhub.R
 import com.br.ifal.hobbyhub.bottombars.MusicBottomBar
 import com.br.ifal.hobbyhub.db.DatabaseHelper
-import com.br.ifal.hobbyhub.models.MusicTrackEntity
+import com.br.ifal.hobbyhub.models.FavoriteMusicData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -47,14 +48,14 @@ fun FavoriteMusicScreen(navController: NavHostController) {
     val musicDao = DatabaseHelper.getInstance(LocalContext.current).musicDao()
     val coroutineScope = rememberCoroutineScope()
 
-    var favoriteTracks by remember { mutableStateOf<List<MusicTrackEntity>>(emptyList()) }
+    var favoriteTracks by remember { mutableStateOf<List<FavoriteMusicData>>(emptyList()) }
 
     LaunchedEffect(Unit) {
-
-        var tracksFromDb = emptyList<MusicTrackEntity>()
+        var tracksFromDb: List<FavoriteMusicData> = emptyList()
         withContext(Dispatchers.IO) {
-            tracksFromDb = musicDao.getFavoriteTracks()
+            tracksFromDb = musicDao.getFavoriteTracksData()
         }
+        Log.i("FavoriteMusicScreen", "Fetched ${tracksFromDb.size} favorite tracks from database.")
         favoriteTracks = tracksFromDb
     }
     Scaffold(modifier = Modifier, bottomBar = { MusicBottomBar(navController) }) { innerPadding ->
@@ -72,7 +73,7 @@ fun FavoriteMusicScreen(navController: NavHostController) {
                     onFavoriteClick = { trackToRemove ->
                         coroutineScope.launch(Dispatchers.IO) {
                             musicDao.deleteTrackByDeezerId(trackToRemove.deezerId)
-                            val updatedTracks = musicDao.getFavoriteTracks()
+                            val updatedTracks = musicDao.getFavoriteTracksData()
                             favoriteTracks = updatedTracks
                         }
                     }
@@ -85,12 +86,12 @@ fun FavoriteMusicScreen(navController: NavHostController) {
 @Composable
 fun MusicInfoCard(
     modifier: Modifier,
-    track: MusicTrackEntity,
-    onFavoriteClick: (MusicTrackEntity) -> Unit
+    track: FavoriteMusicData,
+    onFavoriteClick: (FavoriteMusicData) -> Unit
 ) {
     Row(modifier = modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
         AsyncImage(
-            model = track.cover,
+            model = track.coverUrl,
             contentDescription = track.title,
             modifier = Modifier
                 .size(64.dp)
@@ -105,7 +106,12 @@ fun MusicInfoCard(
         Column(modifier = Modifier.weight(1f)) {
             Text(text = track.title, style = MaterialTheme.typography.bodyMedium)
             Text(
-                text = "${track.duration} segundos",
+                text = track.artistName,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Text(
+                text = track.albumTitle,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
