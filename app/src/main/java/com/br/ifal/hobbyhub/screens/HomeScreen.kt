@@ -36,7 +36,7 @@ private data class Hobby(
 @Composable
 fun HomeScreen(navController: NavHostController) {
     val hobbies = listOf(
-        Hobby(RoutesNames.MusicSearchScreen, R.drawable.ic_music, "Music", "Musica"),
+        Hobby(RoutesNames.MusicSearchScreen, R.drawable.ic_music, "Music", "Música"),
     )
 
     Scaffold(modifier = Modifier) { paddingValues ->
