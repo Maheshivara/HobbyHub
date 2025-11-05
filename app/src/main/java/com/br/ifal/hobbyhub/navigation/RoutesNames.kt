@@ -12,4 +12,7 @@ sealed class RoutesNames() {
 
     @Serializable
     object FavoriteMusicScreen : RoutesNames()
+
+    @Serializable
+    object ClassicalMusicListScreen : RoutesNames()
 }
