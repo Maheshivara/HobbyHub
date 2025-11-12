@@ -8,14 +8,16 @@ import com.br.ifal.hobbyhub.models.ClassicalMusicEntity
 import com.br.ifal.hobbyhub.models.MusicAlbumEntity
 import com.br.ifal.hobbyhub.models.MusicArtistEntity
 import com.br.ifal.hobbyhub.models.MusicTrackEntity
+import com.br.ifal.hobbyhub.models.GameEntity
 
 @Database(
-    version = 1,
+    version = 2,
     entities = [
         MusicAlbumEntity::class,
         MusicTrackEntity::class,
         MusicArtistEntity::class,
-        ClassicalMusicEntity::class
+        ClassicalMusicEntity::class,
+        GameEntity::class
     ]
 )
 abstract class DatabaseHelper : RoomDatabase() {
@@ -23,13 +25,17 @@ abstract class DatabaseHelper : RoomDatabase() {
 
     abstract fun classicalDao(): ClassicalDao
 
+    abstract fun gameDao(): GameDao
+
     companion object {
         fun getInstance(context: Context): DatabaseHelper {
             return Room.databaseBuilder(
                 context,
                 DatabaseHelper::class.java,
                 "hobbies.db"
-            ).build()
+            )
+            .fallbackToDestructiveMigration(true)
+            .build()
         }
     }
 }

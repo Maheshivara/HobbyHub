@@ -21,4 +21,9 @@ object RetrofitProvider {
         createRetrofit("https://api.openopus.org/")
             .create(OpenOpusApi::class.java)
     }
+
+    val gameApi: GameApi by lazy {
+        createRetrofit("https://api.rawg.io/api/")
+            .create(GameApi::class.java)
+    }
 }
