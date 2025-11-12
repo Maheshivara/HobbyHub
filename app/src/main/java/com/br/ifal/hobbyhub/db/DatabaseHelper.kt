@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.br.ifal.hobbyhub.models.ClassicalMusicEntity
+import com.br.ifal.hobbyhub.models.FavoriteMangaEntity
 import com.br.ifal.hobbyhub.models.MusicAlbumEntity
 import com.br.ifal.hobbyhub.models.MusicArtistEntity
 import com.br.ifal.hobbyhub.models.MusicTrackEntity
@@ -18,6 +19,7 @@ import com.br.ifal.hobbyhub.models.GameEntity
         MusicArtistEntity::class,
         ClassicalMusicEntity::class,
         GameEntity::class
+        FavoriteMangaEntity::class
     ]
 )
 abstract class DatabaseHelper : RoomDatabase() {
@@ -26,6 +28,7 @@ abstract class DatabaseHelper : RoomDatabase() {
     abstract fun classicalDao(): ClassicalDao
 
     abstract fun gameDao(): GameDao
+    abstract fun mangaDao(): MangaDao
 
     companion object {
         fun getInstance(context: Context): DatabaseHelper {
