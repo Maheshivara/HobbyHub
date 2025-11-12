@@ -7,7 +7,9 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(
-    "album", indices = [Index(value = ["deezer_id"], unique = true)], foreignKeys = [ForeignKey(
+    "album",
+    indices = [Index(value = ["deezer_id"], unique = true), Index(value = ["artist_id"])],
+    foreignKeys = [ForeignKey(
         entity = MusicArtistEntity::class,
         parentColumns = ["deezer_id"],
         childColumns = ["artist_id"],
