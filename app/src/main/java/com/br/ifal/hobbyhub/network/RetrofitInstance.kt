@@ -21,4 +21,9 @@ object RetrofitProvider {
         createRetrofit("https://api.openopus.org/")
             .create(OpenOpusApi::class.java)
     }
+
+    val jikanApi: JikanApi by lazy {
+        createRetrofit("https://api.jikan.moe/v4/")
+            .create(JikanApi::class.java)
+    }
 }

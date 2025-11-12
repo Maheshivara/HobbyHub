@@ -48,6 +48,12 @@ fun HomeScreen(navController: NavHostController) {
             "Classical Music",
             "Musica Clássica"
         ),
+        Hobby(
+            RoutesNames.MangaListScreen,
+            R.drawable.ic_manga,
+            "Manga",
+            "Mangás"
+        ),
     )
 
     Scaffold(modifier = Modifier) { paddingValues ->

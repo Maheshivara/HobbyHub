@@ -15,4 +15,13 @@ sealed class RoutesNames() {
 
     @Serializable
     object ClassicalMusicListScreen : RoutesNames()
+
+    @Serializable
+    object MangaListScreen : RoutesNames()
+
+    @Serializable
+    object MangaSearchScreen : RoutesNames()
+
+    @Serializable
+    object FavoriteMangasScreen : RoutesNames()
 }

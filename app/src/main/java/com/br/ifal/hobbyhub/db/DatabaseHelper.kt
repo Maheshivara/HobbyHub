@@ -5,17 +5,19 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.br.ifal.hobbyhub.models.ClassicalMusicEntity
+import com.br.ifal.hobbyhub.models.FavoriteMangaEntity
 import com.br.ifal.hobbyhub.models.MusicAlbumEntity
 import com.br.ifal.hobbyhub.models.MusicArtistEntity
 import com.br.ifal.hobbyhub.models.MusicTrackEntity
 
 @Database(
-    version = 1,
+    version = 2,
     entities = [
         MusicAlbumEntity::class,
         MusicTrackEntity::class,
         MusicArtistEntity::class,
-        ClassicalMusicEntity::class
+        ClassicalMusicEntity::class,
+        FavoriteMangaEntity::class
     ]
 )
 abstract class DatabaseHelper : RoomDatabase() {
@@ -23,13 +25,16 @@ abstract class DatabaseHelper : RoomDatabase() {
 
     abstract fun classicalDao(): ClassicalDao
 
+    abstract fun mangaDao(): MangaDao
+
     companion object {
         fun getInstance(context: Context): DatabaseHelper {
             return Room.databaseBuilder(
                 context,
                 DatabaseHelper::class.java,
                 "hobbies.db"
-            ).build()
+            ).fallbackToDestructiveMigration()
+            .build()
         }
     }
 }
