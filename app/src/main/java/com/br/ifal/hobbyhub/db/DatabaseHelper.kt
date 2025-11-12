@@ -18,7 +18,7 @@ import com.br.ifal.hobbyhub.models.GameEntity
         MusicTrackEntity::class,
         MusicArtistEntity::class,
         ClassicalMusicEntity::class,
-        GameEntity::class
+        GameEntity::class,
         FavoriteMangaEntity::class
     ]
 )
