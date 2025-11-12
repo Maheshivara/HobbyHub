@@ -5,9 +5,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.br.ifal.hobbyhub.screens.ClassicalMusicListScreen
+import com.br.ifal.hobbyhub.screens.FavoriteMangasScreen
 import com.br.ifal.hobbyhub.screens.FavoriteMusicScreen
 import com.br.ifal.hobbyhub.screens.GamesScreen
 import com.br.ifal.hobbyhub.screens.HomeScreen
+import com.br.ifal.hobbyhub.screens.MangaListScreen
+import com.br.ifal.hobbyhub.screens.MangaSearchScreen
 import com.br.ifal.hobbyhub.screens.MusicSearchScreen
 
 @Composable
@@ -35,6 +38,18 @@ fun AppNavHost(navController: NavHostController) {
         composable<RoutesNames.GamesScreen> {
             GamesScreen(navController)
         }
+        composable<RoutesNames.MangaListScreen> {
+            MangaListScreen(navController)
+        }
+
+        composable<RoutesNames.MangaSearchScreen> {
+            MangaSearchScreen(navController)
+        }
+
+        composable<RoutesNames.FavoriteMangasScreen> {
+            FavoriteMangasScreen(navController)
+        }
+
     }
 
 }
