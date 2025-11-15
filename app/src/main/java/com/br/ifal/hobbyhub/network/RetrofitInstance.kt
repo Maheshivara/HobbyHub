@@ -30,4 +30,9 @@ object RetrofitProvider {
         createRetrofit("https://api.jikan.moe/v4/")
             .create(JikanApi::class.java)
     }
+
+    val movieApi: MovieApi by lazy {
+        createRetrofit("https://api.themoviedb.org/3/")
+            .create(MovieApi::class.java)
+    }
 }

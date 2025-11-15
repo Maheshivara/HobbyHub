@@ -1,7 +1,5 @@
 package com.br.ifal.hobbyhub.screens
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Star
@@ -25,6 +24,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -33,12 +33,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import coil3.compose.AsyncImage
+import com.br.ifal.hobbyhub.models.Movie
+import com.br.ifal.hobbyhub.viewmodel.MovieViewModel
+
+// Leaving these here in case I need them later.
+// TMDB API Key: 9355fdfc5b31a7cadb5756492717a8c5
+// TMDB API Authorization Token: eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5MzU1ZmRmYzViMzFhN2NhZGI1NzU2NDkyNzE3YThjNSIsIm5iZiI6MTc2MzIyNDg0MC40MzkwMDAxLCJzdWIiOiI2OTE4YWQwOGJkZmUyMmE3ZDg4NzcwNmQiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.XLgZFIKg_KEbgFLpo602UN8dGTv1QBfwGL2vC4GB5FI
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MoviesScreen(navController: NavHostController)
-{
+fun MoviesScreen(navController: NavHostController, movieViewModel: MovieViewModel = viewModel()) {
+    val movies by movieViewModel.movies.collectAsState()
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -54,36 +63,35 @@ fun MoviesScreen(navController: NavHostController)
             )
         }
     ) { innerPadding ->
-        // Interesting, lazy column is faster than normal column.
         LazyColumn(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
-            items(5) {
-                ElementCard()
+            items(movies) { movie ->
+                ElementCard(movie = movie)
             }
         }
     }
 }
 
 @Composable
-fun ElementCard(){
+fun ElementCard(movie: Movie){
     Card(
         modifier = Modifier.padding(8.dp).fillMaxWidth().height(160.dp),
         shape = RectangleShape,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp) // Add a bit of shading.
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Row(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-            // Box height = card height - 32
-            Box(modifier = Modifier.width(96.dp).height(128.dp).background(Color.Blue))
+            AsyncImage(
+                model = "https://image.tmdb.org/t/p/w500/${movie.posterPath}",
+                contentDescription = movie.title,
+                modifier = Modifier.width(96.dp).height(128.dp)
+            )
             Spacer(modifier = Modifier.width(16.dp))
             Column {
                 Text(
-                    text = "Título: (title)",
+                    text = movie.title,
                 )
                 Text(
-                    text = "Gênero: (genre)",
-                )
-                Text(
-                    text = "Ano: (year)",
+                    text = "Lançamento: ${movie.releaseDate}",
                 )
                 StarRating()
             }
