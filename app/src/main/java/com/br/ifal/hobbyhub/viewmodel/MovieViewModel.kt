@@ -1,22 +1,31 @@
 package com.br.ifal.hobbyhub.viewmodel
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.br.ifal.hobbyhub.db.DatabaseHelper
 import com.br.ifal.hobbyhub.models.Movie
+import com.br.ifal.hobbyhub.models.MovieRating
 import com.br.ifal.hobbyhub.network.RetrofitProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class MovieViewModel : ViewModel() {
+class MovieViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val movieDao = DatabaseHelper.getInstance(application).movieDao()
+    private val movieApi = RetrofitProvider.movieApi
 
     private val _movies = MutableStateFlow<List<Movie>>(emptyList())
-    val movies: StateFlow<List<Movie>> = _movies
+    val movies: StateFlow<List<Movie>> = _movies.asStateFlow()
 
-    private val movieApi = RetrofitProvider.movieApi
+    private val _ratings = MutableStateFlow<Map<Int, Int>>(emptyMap())
+    val ratings: StateFlow<Map<Int, Int>> = _ratings.asStateFlow()
 
     init {
         fetchMovies()
+        loadRatings()
     }
 
     private fun fetchMovies() {
@@ -28,6 +37,24 @@ class MovieViewModel : ViewModel() {
                 }
             } catch (e: Exception) {
             }
+        }
+    }
+
+    private fun loadRatings() {
+        viewModelScope.launch {
+            val ratingsList = movieDao.getAllRatings()
+            val ratingsMap = ratingsList.associate { it.movieId to it.rating }
+            _ratings.value = ratingsMap
+        }
+    }
+
+    fun updateRating(movieId: Int, rating: Int) {
+        viewModelScope.launch {
+            val movieRating = MovieRating(movieId, rating)
+            movieDao.insertOrUpdateRating(movieRating)
+            val updatedRatings = _ratings.value.toMutableMap()
+            updatedRatings[movieId] = rating
+            _ratings.value = updatedRatings
         }
     }
 }

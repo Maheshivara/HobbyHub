@@ -10,6 +10,7 @@ import com.br.ifal.hobbyhub.models.MusicAlbumEntity
 import com.br.ifal.hobbyhub.models.MusicArtistEntity
 import com.br.ifal.hobbyhub.models.MusicTrackEntity
 import com.br.ifal.hobbyhub.models.GameEntity
+import com.br.ifal.hobbyhub.models.MovieRating
 
 @Database(
     version = 2,
@@ -19,7 +20,8 @@ import com.br.ifal.hobbyhub.models.GameEntity
         MusicArtistEntity::class,
         ClassicalMusicEntity::class,
         GameEntity::class,
-        FavoriteMangaEntity::class
+        FavoriteMangaEntity::class,
+        MovieRating::class
     ]
 )
 abstract class DatabaseHelper : RoomDatabase() {
@@ -29,6 +31,7 @@ abstract class DatabaseHelper : RoomDatabase() {
 
     abstract fun gameDao(): GameDao
     abstract fun mangaDao(): MangaDao
+    abstract fun movieDao(): MovieDao
 
     companion object {
         fun getInstance(context: Context): DatabaseHelper {

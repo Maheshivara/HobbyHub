@@ -26,9 +26,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
@@ -47,6 +44,7 @@ import com.br.ifal.hobbyhub.viewmodel.MovieViewModel
 @Composable
 fun MoviesScreen(navController: NavHostController, movieViewModel: MovieViewModel = viewModel()) {
     val movies by movieViewModel.movies.collectAsState()
+    val ratings by movieViewModel.ratings.collectAsState()
 
     Scaffold(
         topBar = {
@@ -65,14 +63,16 @@ fun MoviesScreen(navController: NavHostController, movieViewModel: MovieViewMode
     ) { innerPadding ->
         LazyColumn(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
             items(movies) { movie ->
-                ElementCard(movie = movie)
+                ElementCard(movie = movie, rating = ratings[movie.id] ?: 0) {
+                    movieViewModel.updateRating(movie.id, it)
+                }
             }
         }
     }
 }
 
 @Composable
-fun ElementCard(movie: Movie){
+fun ElementCard(movie: Movie, rating: Int, onRatingChange: (Int) -> Unit){
     Card(
         modifier = Modifier.padding(8.dp).fillMaxWidth().height(160.dp),
         shape = RectangleShape,
@@ -93,18 +93,17 @@ fun ElementCard(movie: Movie){
                 Text(
                     text = "Lançamento: ${movie.releaseDate}",
                 )
-                StarRating()
+                StarRating(rating = rating, onRatingChange = onRatingChange)
             }
         }
     }
 }
 
 @Composable
-fun StarRating(){
-    var rating by remember { mutableIntStateOf(0) }
+fun StarRating(rating: Int, onRatingChange: (Int) -> Unit){
     Row{
         for(i in 1..5) {
-            IconButton(onClick = { rating = if (rating == i) 0 else i }) {
+            IconButton(onClick = { onRatingChange(if (rating == i) 0 else i) }) {
                 Icon(
                     imageVector = if (i <= rating) Icons.Filled.Star else Icons.Outlined.StarBorder,
                     contentDescription = null,
