@@ -12,6 +12,7 @@ import com.br.ifal.hobbyhub.screens.HomeScreen
 import com.br.ifal.hobbyhub.screens.MangaListScreen
 import com.br.ifal.hobbyhub.screens.MangaSearchScreen
 import com.br.ifal.hobbyhub.screens.MusicSearchScreen
+import com.br.ifal.hobbyhub.screens.MoviesScreen
 
 @Composable
 fun AppNavHost(navController: NavHostController) {
@@ -50,6 +51,9 @@ fun AppNavHost(navController: NavHostController) {
             FavoriteMangasScreen(navController)
         }
 
+        composable<RoutesNames.MoviesScreen> {
+            MoviesScreen(navController)
+        }
     }
 
 }

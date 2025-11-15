@@ -27,4 +27,7 @@ sealed class RoutesNames() {
 
     @Serializable
     object FavoriteMangasScreen : RoutesNames()
+
+    @Serializable
+    object MoviesScreen : RoutesNames()
 }
