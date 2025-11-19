@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Star
@@ -50,7 +51,6 @@ fun GamesScreen(navController: NavHostController) {
     val api = RetrofitProvider.gameApi
     val gameDao = DatabaseHelper.getInstance(LocalContext.current).gameDao()
     val scope = rememberCoroutineScope()
-
     val games = remember { mutableStateListOf<GameEntity>() }
 
     LaunchedEffect(Unit) {
@@ -101,7 +101,6 @@ fun GamesScreen(navController: NavHostController) {
                     game = game,
                     onToggleFavorite = { updatedGame ->
                         scope.launch {
-                            // Atualiza o banco em background
                             withContext(Dispatchers.IO) {
                                 if (updatedGame.isFavorite)
                                     gameDao.insertGame(updatedGame)
@@ -109,7 +108,6 @@ fun GamesScreen(navController: NavHostController) {
                                     gameDao.deleteGame(updatedGame)
                             }
 
-                            // Atualiza a lista local e reordena (UI)
                             val index = games.indexOfFirst { it.id == updatedGame.id }
                             if (index != -1) {
                                 games[index] = updatedGame
@@ -127,11 +125,15 @@ fun GamesScreen(navController: NavHostController) {
 
 @Composable
 private fun SimpleTopBar(onBack: () -> Unit) {
-    Surface(tonalElevation = 2.dp) {
+    Surface(
+        tonalElevation = 2.dp,
+        modifier = Modifier.statusBarsPadding()
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp)
+                .statusBarsPadding()
                 .padding(horizontal = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -173,19 +175,19 @@ fun GameCard(
                     .clip(MaterialTheme.shapes.medium),
                 contentScale = ContentScale.Crop
             )
+
             Spacer(modifier = Modifier.width(12.dp))
+
             Column(modifier = Modifier.weight(1f)) {
                 Text(text = game.name, style = MaterialTheme.typography.bodyLarge)
                 Text(text = "⭐ ${game.rating}", style = MaterialTheme.typography.bodySmall)
                 Text(text = game.genres, style = MaterialTheme.typography.bodySmall)
             }
+
             Icon(
                 imageVector = if (game.isFavorite) Icons.Default.Star else Icons.Default.StarBorder,
                 contentDescription = "Favoritar jogo",
-                tint = if (game.isFavorite)
-                    MaterialTheme.colorScheme.primary
-                else
-                    MaterialTheme.colorScheme.outline,
+                tint = if (game.isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
                 modifier = Modifier
                     .size(28.dp)
                     .clickable {
