@@ -4,14 +4,14 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.br.ifal.hobbyhub.screens.ClassicalMusicListScreen
-import com.br.ifal.hobbyhub.screens.FavoriteMangasScreen
-import com.br.ifal.hobbyhub.screens.FavoriteMusicScreen
-import com.br.ifal.hobbyhub.screens.GamesScreen
-import com.br.ifal.hobbyhub.screens.HomeScreen
-import com.br.ifal.hobbyhub.screens.MangaListScreen
-import com.br.ifal.hobbyhub.screens.MangaSearchScreen
-import com.br.ifal.hobbyhub.screens.MusicSearchScreen
+import com.br.ifal.hobbyhub.ui.screens.ClassicalMusicListScreen
+import com.br.ifal.hobbyhub.ui.screens.FavoriteMangasScreen
+import com.br.ifal.hobbyhub.ui.screens.FavoriteMusicScreen
+import com.br.ifal.hobbyhub.ui.screens.GamesScreen
+import com.br.ifal.hobbyhub.ui.screens.HomeScreen
+import com.br.ifal.hobbyhub.ui.screens.MangaListScreen
+import com.br.ifal.hobbyhub.ui.screens.MangaSearchScreen
+import com.br.ifal.hobbyhub.ui.screens.MusicSearchScreen
 
 @Composable
 fun AppNavHost(navController: NavHostController) {

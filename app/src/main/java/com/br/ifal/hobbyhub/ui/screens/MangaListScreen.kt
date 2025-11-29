@@ -1,4 +1,4 @@
-package com.br.ifal.hobbyhub.screens
+package com.br.ifal.hobbyhub.ui.screens
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -50,7 +50,6 @@ import com.br.ifal.hobbyhub.bottombars.MangaBottomBar
 import com.br.ifal.hobbyhub.models.MangaItem
 import com.br.ifal.hobbyhub.network.RetrofitProvider
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -72,8 +71,9 @@ fun MangaListScreen(navController: NavHostController) {
         scope.launch {
             isLoading = true
             try {
-                
-                val response = withContext(Dispatchers.IO) { jikanApi.getTopManga(page = pageToLoad) }
+
+                val response =
+                    withContext(Dispatchers.IO) { jikanApi.getTopManga(page = pageToLoad) }
                 withContext(Dispatchers.Main) {
                     if (pageToLoad == 1) {
                         mangaList = response.data
@@ -144,7 +144,9 @@ fun MangaListScreen(navController: NavHostController) {
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         items(mangaList, key = { it.malId }) { manga ->
-                            MangaCard(manga = manga, onClick = { /* TODO: Navegar para detalhes */ })
+                            MangaCard(
+                                manga = manga,
+                                onClick = { /* TODO: Navegar para detalhes */ })
                         }
                         // Indicador de carregamento no final da lista
                         if (isLoading && mangaList.isNotEmpty()) {
@@ -206,7 +208,7 @@ fun MangaCard(manga: MangaItem, onClick: () -> Unit) {
                         overflow = TextOverflow.Ellipsis
                     )
                     Spacer(modifier = Modifier.height(4.dp))
-                    
+
                     // Tipo e Status
                     manga.type?.let { type ->
                         Text(
@@ -215,7 +217,7 @@ fun MangaCard(manga: MangaItem, onClick: () -> Unit) {
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
-                    
+
                     manga.status?.let { status ->
                         Text(
                             text = "Status: $status",
@@ -223,9 +225,9 @@ fun MangaCard(manga: MangaItem, onClick: () -> Unit) {
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
-                    
+
                     Spacer(modifier = Modifier.height(4.dp))
-                    
+
                     // Sinopse
                     manga.synopsis?.let { synopsis ->
                         Text(
@@ -261,7 +263,7 @@ fun MangaCard(manga: MangaItem, onClick: () -> Unit) {
                             )
                         }
                     }
-                    
+
                     // Volumes
                     manga.volumes?.let { volumes ->
                         Text(
@@ -270,7 +272,7 @@ fun MangaCard(manga: MangaItem, onClick: () -> Unit) {
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
-                    
+
                     // Capítulos
                     manga.chapters?.let { chapters ->
                         Text(

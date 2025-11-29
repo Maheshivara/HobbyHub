@@ -1,4 +1,4 @@
-package com.br.ifal.hobbyhub.screens
+package com.br.ifal.hobbyhub.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
