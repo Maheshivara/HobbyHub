@@ -6,16 +6,18 @@ import com.br.ifal.hobbyhub.enums.MusicSearchScreenTypeEnum
 import com.br.ifal.hobbyhub.models.DeezerTrackItem
 import com.br.ifal.hobbyhub.repositories.MusicRepository
 import com.br.ifal.hobbyhub.ui.state.MusicSearchUiState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MusicSearchViewModel(
-    private val repository: MusicRepository
+@HiltViewModel
+class MusicSearchViewModel @Inject constructor(
+    private val repository: MusicRepository,
 ) : ViewModel() {
     private val _state = MutableStateFlow(MusicSearchUiState())
-
     val uiState get() = _state.asStateFlow()
 
     init {

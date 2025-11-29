@@ -33,32 +33,29 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
 import com.br.ifal.hobbyhub.R
 import com.br.ifal.hobbyhub.bottombars.MusicBottomBar
 import com.br.ifal.hobbyhub.enums.MusicSearchScreenTypeEnum
 import com.br.ifal.hobbyhub.models.DeezerTrackItem
+import com.br.ifal.hobbyhub.navigation.RoutesNames
 import com.br.ifal.hobbyhub.ui.viewmodel.MusicSearchViewModel
-import com.br.ifal.hobbyhub.ui.viewmodel.MusicSearchViewModelFactory
 import kotlinx.coroutines.launch
 
 @Composable
-fun MusicSearchScreen(navController: NavHostController) {
+fun MusicSearchScreen(
+    onNavigateTo: (RoutesNames) -> Unit,
+    musicViewModel: MusicSearchViewModel
+) {
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
-    val context = LocalContext.current
-    val musicViewModel: MusicSearchViewModel =
-        viewModel(factory = MusicSearchViewModelFactory(context))
     val uiState by musicViewModel.uiState.collectAsState()
 
-    Scaffold(modifier = Modifier, bottomBar = { MusicBottomBar(navController) }) { innerPadding ->
+    Scaffold(modifier = Modifier, bottomBar = { MusicBottomBar(onNavigateTo) }) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
             MusicSearchBar(
                 query = uiState.searchQuery,
@@ -181,7 +178,6 @@ fun MusicSearchBar(
             IconButton(
                 {
                     if (query.trim().length >= 3) {
-                        val search = query.trim()
                         onSearch()
                     }
                 },
