@@ -6,8 +6,11 @@ import com.br.ifal.hobbyhub.models.MusicAlbumEntity
 import com.br.ifal.hobbyhub.models.MusicArtistEntity
 import com.br.ifal.hobbyhub.models.MusicTrackEntity
 import com.br.ifal.hobbyhub.network.DeezerApi
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class MusicRepository(
+@Singleton
+class MusicRepository @Inject constructor(
     private val musicDao: MusicDao,
     private val deezerApi: DeezerApi,
 ) {
@@ -51,7 +54,6 @@ class MusicRepository(
         )
         musicDao.insertTrack(trackEntity)
     }
-
 
     suspend fun fetchTopTracks() = deezerApi.getChartTracks()
 

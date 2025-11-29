@@ -12,11 +12,6 @@ object RetrofitProvider {
             .build()
     }
 
-    val deezerApi: DeezerApi by lazy {
-        createRetrofit("https://api.deezer.com/")
-            .create(DeezerApi::class.java)
-    }
-
     val openOpusApi: OpenOpusApi by lazy {
         createRetrofit("https://api.openopus.org/")
             .create(OpenOpusApi::class.java)

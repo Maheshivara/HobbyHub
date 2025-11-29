@@ -4,14 +4,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.br.ifal.hobbyhub.repositories.MusicRepository
 import com.br.ifal.hobbyhub.ui.state.FavoriteMusicUiState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class FavoriteMusicViewModel(
-    private val repository: MusicRepository
+@HiltViewModel
+class FavoriteMusicViewModel @Inject constructor(
+    private val repository: MusicRepository,
 ) : ViewModel() {
+
     private val _state = MutableStateFlow(FavoriteMusicUiState())
 
     val uiState get() = _state.asStateFlow()

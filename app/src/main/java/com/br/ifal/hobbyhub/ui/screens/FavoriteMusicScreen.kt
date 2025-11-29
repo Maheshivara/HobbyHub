@@ -24,27 +24,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
 import com.br.ifal.hobbyhub.R
 import com.br.ifal.hobbyhub.bottombars.MusicBottomBar
 import com.br.ifal.hobbyhub.models.FavoriteMusicData
+import com.br.ifal.hobbyhub.navigation.RoutesNames
 import com.br.ifal.hobbyhub.ui.viewmodel.FavoriteMusicViewModel
-import com.br.ifal.hobbyhub.ui.viewmodel.FavoriteMusicViewModelFactory
 
 @Composable
 
-fun FavoriteMusicScreen(navController: NavHostController) {
-    val context = LocalContext.current
-    val favoriteViewModel: FavoriteMusicViewModel =
-        viewModel(factory = FavoriteMusicViewModelFactory(context))
+fun FavoriteMusicScreen(
+    onNavigateTo: (RoutesNames) -> Unit,
+    favoriteViewModel: FavoriteMusicViewModel
+) {
+
     val uiState by favoriteViewModel.uiState.collectAsState()
 
-    Scaffold(modifier = Modifier, bottomBar = { MusicBottomBar(navController) }) { innerPadding ->
+    Scaffold(modifier = Modifier, bottomBar = { MusicBottomBar(onNavigateTo) }) { innerPadding ->
         LazyColumn(
             modifier = Modifier
                 .padding(innerPadding)

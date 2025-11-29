@@ -1,6 +1,7 @@
 package com.br.ifal.hobbyhub.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -12,9 +13,11 @@ import com.br.ifal.hobbyhub.ui.screens.HomeScreen
 import com.br.ifal.hobbyhub.ui.screens.MangaListScreen
 import com.br.ifal.hobbyhub.ui.screens.MangaSearchScreen
 import com.br.ifal.hobbyhub.ui.screens.MusicSearchScreen
+import com.br.ifal.hobbyhub.ui.viewmodel.FavoriteMusicViewModel
+import com.br.ifal.hobbyhub.ui.viewmodel.MusicSearchViewModel
 
 @Composable
-fun AppNavHost(navController: NavHostController) {
+fun AppNavHost(navController: NavHostController, viewModels: Map<RoutesNames, ViewModel>) {
     NavHost(
         navController,
         startDestination = RoutesNames.HomeScreen
@@ -24,11 +27,13 @@ fun AppNavHost(navController: NavHostController) {
         }
 
         composable<RoutesNames.MusicSearchScreen> {
-            MusicSearchScreen(navController)
+            val viewModel = viewModels[RoutesNames.MusicSearchScreen] as MusicSearchViewModel
+            MusicSearchScreen({ routeName -> navController.navigate(routeName) }, viewModel)
         }
 
         composable<RoutesNames.FavoriteMusicScreen> {
-            FavoriteMusicScreen(navController)
+            val viewModel = viewModels[RoutesNames.FavoriteMusicScreen] as FavoriteMusicViewModel
+            FavoriteMusicScreen({ routeName -> navController.navigate(routeName) }, viewModel)
         }
 
         composable<RoutesNames.ClassicalMusicListScreen> {
