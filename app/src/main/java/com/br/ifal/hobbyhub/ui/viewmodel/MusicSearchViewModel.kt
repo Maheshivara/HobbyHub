@@ -1,0 +1,167 @@
+package com.br.ifal.hobbyhub.ui.viewmodel
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.br.ifal.hobbyhub.enums.MusicSearchScreenTypeEnum
+import com.br.ifal.hobbyhub.models.DeezerTrackItem
+import com.br.ifal.hobbyhub.repositories.MusicRepository
+import com.br.ifal.hobbyhub.ui.state.MusicSearchUiState
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+
+class MusicSearchViewModel(
+    private val repository: MusicRepository
+) : ViewModel() {
+    private val _state = MutableStateFlow(MusicSearchUiState())
+
+    val uiState get() = _state.asStateFlow()
+
+    init {
+        getTopTracks()
+    }
+
+    private fun getTopTracks() {
+        viewModelScope.launch {
+            val topTracksResponse = repository.fetchTopTracks()
+            if (topTracksResponse.isSuccessful) {
+                val tracks = topTracksResponse.body()?.tracks
+                if (tracks != null) {
+                    _state.update { currentState ->
+                        currentState.copy(
+                            trackList = tracks.data.map {
+                                DeezerTrackItem(
+                                    id = it.id,
+                                    rank = it.rank,
+                                    title = it.title,
+                                    duration = it.duration,
+                                    artist = it.artist,
+                                    album = it.album
+                                )
+                            }
+                        )
+                    }
+                }
+            }
+            getFavoriteTrackIds()
+            orderByFavoriteTracks()
+        }
+    }
+
+    private fun getFavoriteTrackIds() {
+        viewModelScope.launch {
+            val favoriteIds = repository.getFavoriteTrackIdList()
+            _state.update { currentState ->
+                currentState.copy(
+                    favoriteTracksIdList = favoriteIds
+                )
+            }
+        }
+    }
+
+    private fun orderByFavoriteTracks() {
+        viewModelScope.launch {
+            val favoriteIds = repository.getFavoriteTrackIdList()
+            _state.update { currentState ->
+                val (favoriteTracks, nonFavoriteTracks) = currentState.trackList.partition {
+                    favoriteIds.contains(it.id)
+                }
+                currentState.copy(
+                    trackList = favoriteTracks + nonFavoriteTracks
+                )
+            }
+        }
+    }
+
+    fun toggleFavoriteTrack(trackItem: DeezerTrackItem) {
+        viewModelScope.launch {
+            val isFavorite = _state.value.favoriteTracksIdList.contains(trackItem.id)
+            if (isFavorite) {
+                repository.removeFavoriteTrackById(trackItem.id)
+            } else {
+                repository.addFavoriteTrack(trackItem)
+            }
+            getFavoriteTrackIds()
+            orderByFavoriteTracks()
+        }
+    }
+
+    fun updateSearchQuery(query: String) {
+        _state.update { currentState ->
+            currentState.copy(searchQuery = query)
+        }
+    }
+
+    fun updateSearchType(type: MusicSearchScreenTypeEnum) {
+        _state.update { currentState ->
+            currentState.copy(searchType = type)
+        }
+    }
+
+    fun searchMusic() {
+        viewModelScope.launch {
+            val query = _state.value.searchQuery
+            val type = _state.value.searchType
+            val page = _state.value.searchPage
+            val searchResponse = repository.searchTracks(query, type.apiValue, page)
+            if (searchResponse.isSuccessful) {
+                val tracks = searchResponse.body()?.data
+                val total = searchResponse.body()?.total ?: 0
+                if (tracks != null) {
+                    _state.update { currentState ->
+                        currentState.copy(
+                            trackList = tracks.map {
+                                DeezerTrackItem(
+                                    id = it.id,
+                                    rank = it.rank,
+                                    title = it.title,
+                                    duration = it.duration,
+                                    artist = it.artist,
+                                    album = it.album
+                                )
+                            },
+                            totalResult = total
+                        )
+                    }
+                }
+            }
+            orderByFavoriteTracks()
+        }
+    }
+
+    fun loadNextPage() {
+        viewModelScope.launch {
+            val currentPage = _state.value.searchPage
+            val totalResults = _state.value.totalResult
+            if (currentPage * 20 >= totalResults) {
+                return@launch
+            }
+            _state.update { currentState ->
+                currentState.copy(searchPage = currentPage + 1)
+            }
+            searchMusic()
+        }
+    }
+
+    fun loadPreviousPage() {
+        viewModelScope.launch {
+            val currentPage = _state.value.searchPage
+            if (currentPage > 1) {
+                _state.update { currentState ->
+                    currentState.copy(searchPage = currentPage - 1)
+                }
+                searchMusic()
+            }
+        }
+    }
+
+    fun resetSearchPage() {
+        _state.update { currentState ->
+            currentState.copy(
+                searchPage = 1,
+                totalResult = 0
+            )
+        }
+    }
+}

@@ -1,4 +1,4 @@
-package com.br.ifal.hobbyhub.screens
+package com.br.ifal.hobbyhub.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -49,7 +49,7 @@ import kotlinx.coroutines.withContext
 fun FavoriteMangasScreen(navController: NavHostController) {
     val mangaDao = DatabaseHelper.getInstance(LocalContext.current).mangaDao()
     val coroutineScope = CoroutineScope(Dispatchers.IO)
-    
+
     var favoriteMangas by remember { mutableStateOf<List<FavoriteMangaEntity>>(emptyList()) }
 
     LaunchedEffect(Unit) {
@@ -135,7 +135,7 @@ fun FavoriteMangaCard(
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
-                
+
                 manga.type?.let { type ->
                     Text(
                         text = type,
@@ -143,7 +143,7 @@ fun FavoriteMangaCard(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-                
+
                 manga.status?.let { status ->
                     Text(
                         text = status,
@@ -151,7 +151,7 @@ fun FavoriteMangaCard(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-                
+
                 manga.score?.let { score ->
                     Text(
                         text = "★ $score",
@@ -159,13 +159,13 @@ fun FavoriteMangaCard(
                         color = MaterialTheme.colorScheme.primary
                     )
                 }
-                
+
                 val volumesChapters = buildString {
                     manga.volumes?.let { append("Volumes: $it") }
                     if (manga.volumes != null && manga.chapters != null) append(" | ")
                     manga.chapters?.let { append("Capítulos: $it") }
                 }
-                
+
                 if (volumesChapters.isNotEmpty()) {
                     Text(
                         text = volumesChapters,
@@ -173,7 +173,7 @@ fun FavoriteMangaCard(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-                
+
                 manga.synopsis?.let { synopsis ->
                     Text(
                         text = synopsis,

@@ -10,9 +10,14 @@ import retrofit2.http.Query
 interface DeezerApi {
     @GET("search")
     suspend fun searchTracks(
-        @Query("q") query: String
+        @Query("q") query: String,
+        @Query("strict") strict: String = "on",
+        @Query("limit") limit: Int = 20,
+        @Query("index") index: Int = 0
     ): Response<DeezerSearchResponse<DeezerTrackItem>>
 
     @GET("chart")
-    suspend fun getChartTracks(): Response<DeezerChartResponse>
+    suspend fun getChartTracks(
+        @Query("limit") limit: Int = 30,
+    ): Response<DeezerChartResponse>
 }

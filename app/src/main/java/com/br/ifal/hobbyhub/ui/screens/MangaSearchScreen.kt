@@ -1,4 +1,4 @@
-package com.br.ifal.hobbyhub.screens
+package com.br.ifal.hobbyhub.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -239,13 +239,13 @@ fun MangaSearchCard(
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
-                
+
                 Text(
                     text = manga.type ?: "Desconhecido",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                
+
                 manga.score?.let { score ->
                     Text(
                         text = "★ $score",
@@ -253,7 +253,7 @@ fun MangaSearchCard(
                         color = MaterialTheme.colorScheme.primary
                     )
                 }
-                
+
                 manga.synopsis?.let { synopsis ->
                     Text(
                         text = synopsis,
