@@ -1,6 +1,7 @@
 package com.br.ifal.hobbyhub.modules
 
 import com.br.ifal.hobbyhub.network.DeezerApi
+import com.br.ifal.hobbyhub.network.OpenOpusApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -45,4 +46,16 @@ object NetworkModule {
     @Named("deezerRetrofit")
     fun provideDeezerRetrofit(client: OkHttpClient): Retrofit =
         createRetrofit("https://api.deezer.com/", client)
+
+
+    @Provides
+    @Singleton
+    fun provideOpenOpusApi(@Named("openOpusRetrofit") retrofit: Retrofit): OpenOpusApi =
+        retrofit.create(OpenOpusApi::class.java)
+
+    @Provides
+    @Singleton
+    @Named("openOpusRetrofit")
+    fun provideOpenOpusRetrofit(client: OkHttpClient): Retrofit =
+        createRetrofit("https://api.openopus.org/", client)
 }
