@@ -9,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import com.br.ifal.hobbyhub.navigation.AppNavHost
 import com.br.ifal.hobbyhub.navigation.RoutesNames
 import com.br.ifal.hobbyhub.ui.theme.HobbyHubTheme
+import com.br.ifal.hobbyhub.ui.viewmodel.ClassicalMusicViewModel
 import com.br.ifal.hobbyhub.ui.viewmodel.FavoriteMusicViewModel
 import com.br.ifal.hobbyhub.ui.viewmodel.MusicSearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,7 +23,8 @@ class MainActivity : ComponentActivity() {
             HobbyHubTheme {
                 val viewModelsMap = mapOf(
                     RoutesNames.MusicSearchScreen to hiltViewModel<MusicSearchViewModel>(),
-                    RoutesNames.FavoriteMusicScreen to hiltViewModel<FavoriteMusicViewModel>()
+                    RoutesNames.FavoriteMusicScreen to hiltViewModel<FavoriteMusicViewModel>(),
+                    RoutesNames.ClassicalMusicListScreen to hiltViewModel<ClassicalMusicViewModel>()
                 )
                 val navController = rememberNavController()
                 AppNavHost(navController, viewModelsMap)

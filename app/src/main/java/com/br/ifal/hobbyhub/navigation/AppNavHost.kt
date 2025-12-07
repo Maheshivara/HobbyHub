@@ -13,6 +13,7 @@ import com.br.ifal.hobbyhub.ui.screens.HomeScreen
 import com.br.ifal.hobbyhub.ui.screens.MangaListScreen
 import com.br.ifal.hobbyhub.ui.screens.MangaSearchScreen
 import com.br.ifal.hobbyhub.ui.screens.MusicSearchScreen
+import com.br.ifal.hobbyhub.ui.viewmodel.ClassicalMusicViewModel
 import com.br.ifal.hobbyhub.ui.viewmodel.FavoriteMusicViewModel
 import com.br.ifal.hobbyhub.ui.viewmodel.MusicSearchViewModel
 
@@ -37,7 +38,7 @@ fun AppNavHost(navController: NavHostController, viewModels: Map<RoutesNames, Vi
         }
 
         composable<RoutesNames.ClassicalMusicListScreen> {
-            ClassicalMusicListScreen(navController)
+            ClassicalMusicListScreen(viewModels[RoutesNames.ClassicalMusicListScreen] as ClassicalMusicViewModel)
         }
 
         composable<RoutesNames.GamesScreen> {

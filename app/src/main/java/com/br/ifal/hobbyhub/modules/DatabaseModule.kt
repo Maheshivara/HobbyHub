@@ -1,6 +1,7 @@
 package com.br.ifal.hobbyhub.modules
 
 import android.content.Context
+import com.br.ifal.hobbyhub.db.ClassicalDao
 import com.br.ifal.hobbyhub.db.DatabaseHelper
 import com.br.ifal.hobbyhub.db.MusicDao
 import dagger.Module
@@ -22,4 +23,7 @@ object DatabaseModule {
 
     @Provides
     fun provideMusicDao(db: DatabaseHelper): MusicDao = db.musicDao()
+
+    @Provides
+    fun provideClassicalDao(db: DatabaseHelper): ClassicalDao = db.classicalDao()
 }
