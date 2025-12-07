@@ -7,18 +7,26 @@ import com.br.ifal.hobbyhub.db.DatabaseHelper
 import com.br.ifal.hobbyhub.models.Movie
 import com.br.ifal.hobbyhub.models.MovieRating
 import com.br.ifal.hobbyhub.network.RetrofitProvider
+import com.br.ifal.hobbyhub.repository.MovieRepository
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class MovieViewModel(application: Application) : AndroidViewModel(application) {
 
     private val movieDao = DatabaseHelper.getInstance(application).movieDao()
     private val movieApi = RetrofitProvider.movieApi
+    private val movieRepository = MovieRepository(movieApi, movieDao)
 
-    private val _movies = MutableStateFlow<List<Movie>>(emptyList())
-    val movies: StateFlow<List<Movie>> = _movies.asStateFlow()
+    val movies: StateFlow<List<Movie>> = movieRepository.movies
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
 
     private val _ratings = MutableStateFlow<Map<Int, Int>>(emptyMap())
     val ratings: StateFlow<Map<Int, Int>> = _ratings.asStateFlow()
@@ -30,13 +38,7 @@ class MovieViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun fetchMovies() {
         viewModelScope.launch {
-            try {
-                val response = movieApi.getMovies(authorization = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5MzU1ZmRmYzViMzFhN2NhZGI1NzU2NDkyNzE3YThjNSIsIm5iZiI6MTc2MzIyNDg0MC40MzkwMDAxLCJzdWIiOiI2OTE4YWQwOGJkZmUyMmE3ZDg4NzcwNmQiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.XLgZFIKg_KEbgFLpo602UN8dGTv1QBfwGL2vC4GB5FI")
-                if (response.isSuccessful) {
-                    _movies.value = response.body()?.results?.take(20) ?: emptyList()
-                }
-            } catch (e: Exception) {
-            }
+            movieRepository.fetchMovies()
         }
     }
 

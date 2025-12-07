@@ -10,10 +10,11 @@ import com.br.ifal.hobbyhub.models.MusicAlbumEntity
 import com.br.ifal.hobbyhub.models.MusicArtistEntity
 import com.br.ifal.hobbyhub.models.MusicTrackEntity
 import com.br.ifal.hobbyhub.models.GameEntity
+import com.br.ifal.hobbyhub.models.Movie
 import com.br.ifal.hobbyhub.models.MovieRating
 
 @Database(
-    version = 2,
+    version = 3,
     entities = [
         MusicAlbumEntity::class,
         MusicTrackEntity::class,
@@ -21,7 +22,8 @@ import com.br.ifal.hobbyhub.models.MovieRating
         ClassicalMusicEntity::class,
         GameEntity::class,
         FavoriteMangaEntity::class,
-        MovieRating::class
+        MovieRating::class,
+        Movie::class
     ]
 )
 abstract class DatabaseHelper : RoomDatabase() {

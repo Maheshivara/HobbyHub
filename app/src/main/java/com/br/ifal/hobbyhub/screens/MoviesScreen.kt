@@ -36,10 +36,6 @@ import coil3.compose.AsyncImage
 import com.br.ifal.hobbyhub.models.Movie
 import com.br.ifal.hobbyhub.viewmodel.MovieViewModel
 
-// Leaving these here in case I need them later.
-// TMDB API Key: 9355fdfc5b31a7cadb5756492717a8c5
-// TMDB API Authorization Token: eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5MzU1ZmRmYzViMzFhN2NhZGI1NzU2NDkyNzE3YThjNSIsIm5iZiI6MTc2MzIyNDg0MC40MzkwMDAxLCJzdWIiOiI2OTE4YWQwOGJkZmUyMmE3ZDg4NzcwNmQiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.XLgZFIKg_KEbgFLpo602UN8dGTv1QBfwGL2vC4GB5FI
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MoviesScreen(navController: NavHostController, movieViewModel: MovieViewModel = viewModel()) {
