@@ -1,7 +1,6 @@
 package com.br.ifal.hobbyhub.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -13,12 +12,10 @@ import com.br.ifal.hobbyhub.ui.screens.HomeScreen
 import com.br.ifal.hobbyhub.ui.screens.MangaListScreen
 import com.br.ifal.hobbyhub.ui.screens.MangaSearchScreen
 import com.br.ifal.hobbyhub.ui.screens.MusicSearchScreen
-import com.br.ifal.hobbyhub.ui.viewmodel.ClassicalMusicViewModel
-import com.br.ifal.hobbyhub.ui.viewmodel.FavoriteMusicViewModel
-import com.br.ifal.hobbyhub.ui.viewmodel.MusicSearchViewModel
+import com.br.ifal.hobbyhub.ui.viewmodel.ViewModelsProvider
 
 @Composable
-fun AppNavHost(navController: NavHostController, viewModels: Map<RoutesNames, ViewModel>) {
+fun AppNavHost(navController: NavHostController, viewModelsProvider: ViewModelsProvider) {
     NavHost(
         navController,
         startDestination = RoutesNames.HomeScreen
@@ -28,17 +25,21 @@ fun AppNavHost(navController: NavHostController, viewModels: Map<RoutesNames, Vi
         }
 
         composable<RoutesNames.MusicSearchScreen> {
-            val viewModel = viewModels[RoutesNames.MusicSearchScreen] as MusicSearchViewModel
-            MusicSearchScreen({ routeName -> navController.navigate(routeName) }, viewModel)
+            MusicSearchScreen(
+                { routeName -> navController.navigate(routeName) },
+                viewModelsProvider.musicSearchViewModel
+            )
         }
 
         composable<RoutesNames.FavoriteMusicScreen> {
-            val viewModel = viewModels[RoutesNames.FavoriteMusicScreen] as FavoriteMusicViewModel
-            FavoriteMusicScreen({ routeName -> navController.navigate(routeName) }, viewModel)
+            FavoriteMusicScreen(
+                { routeName -> navController.navigate(routeName) },
+                viewModelsProvider.favoriteMusicViewModel
+            )
         }
 
         composable<RoutesNames.ClassicalMusicListScreen> {
-            ClassicalMusicListScreen(viewModels[RoutesNames.ClassicalMusicListScreen] as ClassicalMusicViewModel)
+            ClassicalMusicListScreen(viewModelsProvider.classicalMusicViewModel)
         }
 
         composable<RoutesNames.GamesScreen> {
@@ -55,7 +56,5 @@ fun AppNavHost(navController: NavHostController, viewModels: Map<RoutesNames, Vi
         composable<RoutesNames.FavoriteMangasScreen> {
             FavoriteMangasScreen(navController)
         }
-
     }
-
 }

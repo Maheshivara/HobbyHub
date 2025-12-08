@@ -7,11 +7,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.br.ifal.hobbyhub.navigation.AppNavHost
-import com.br.ifal.hobbyhub.navigation.RoutesNames
 import com.br.ifal.hobbyhub.ui.theme.HobbyHubTheme
-import com.br.ifal.hobbyhub.ui.viewmodel.ClassicalMusicViewModel
-import com.br.ifal.hobbyhub.ui.viewmodel.FavoriteMusicViewModel
-import com.br.ifal.hobbyhub.ui.viewmodel.MusicSearchViewModel
+import com.br.ifal.hobbyhub.ui.viewmodel.ViewModelsProvider
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -21,13 +18,13 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             HobbyHubTheme {
-                val viewModelsMap = mapOf(
-                    RoutesNames.MusicSearchScreen to hiltViewModel<MusicSearchViewModel>(),
-                    RoutesNames.FavoriteMusicScreen to hiltViewModel<FavoriteMusicViewModel>(),
-                    RoutesNames.ClassicalMusicListScreen to hiltViewModel<ClassicalMusicViewModel>()
+                val viewModelProvider = ViewModelsProvider(
+                    musicSearchViewModel = hiltViewModel(),
+                    favoriteMusicViewModel = hiltViewModel(),
+                    classicalMusicViewModel = hiltViewModel()
                 )
                 val navController = rememberNavController()
-                AppNavHost(navController, viewModelsMap)
+                AppNavHost(navController, viewModelProvider)
             }
         }
     }
