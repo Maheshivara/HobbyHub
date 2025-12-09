@@ -12,7 +12,7 @@ class ClassicalRepository @Inject constructor(
     private val openOpusApi: OpenOpusApi
 ) {
     suspend fun getWorks(): List<ClassicalMusicEntity> {
-        val savedWorks = getSavedWorks()
+        val savedWorks = getSavedWorks().sortedByDescending { it.rating }
         val randomWorks = getRandomWorks()
         val newWorks = randomWorks.filter { work ->
             savedWorks.none { it.id == work.id }

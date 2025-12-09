@@ -8,9 +8,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material3.Card
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -35,7 +37,11 @@ fun ClassicalMusicListScreen(viewModel: ClassicalMusicViewModel) {
 
     val uiState by viewModel.uiState.collectAsState()
 
-    Scaffold(modifier = Modifier) { innerPadding ->
+    Scaffold(modifier = Modifier, floatingActionButton = {
+        RefreshFloatingActionButton(onRefresh = {
+            viewModel.loadRandomWorks()
+        })
+    }) { innerPadding ->
         LazyColumn(
             modifier = Modifier.padding(innerPadding),
             verticalArrangement = Arrangement.spacedBy(6.dp)
@@ -100,5 +106,17 @@ fun RatingStars(rating: Int, onClickRate: (Int) -> Unit) {
                 )
             }
         }
+    }
+}
+
+@Composable
+fun RefreshFloatingActionButton(onRefresh: () -> Unit) {
+    FloatingActionButton(
+        onClick = onRefresh
+    ) {
+        Icon(
+            imageVector = Icons.Default.Refresh,
+            contentDescription = "Refresh"
+        )
     }
 }
