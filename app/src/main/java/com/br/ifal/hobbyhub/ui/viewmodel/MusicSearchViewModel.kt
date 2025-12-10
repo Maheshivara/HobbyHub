@@ -51,6 +51,11 @@ class MusicSearchViewModel @Inject constructor(
         }
     }
 
+    fun reloadFavoriteTracks() {
+        getFavoriteTrackIds()
+        orderByFavoriteTracks()
+    }
+
     private fun getFavoriteTrackIds() {
         viewModelScope.launch {
             val favoriteIds = repository.getFavoriteTrackIdList()
@@ -76,7 +81,7 @@ class MusicSearchViewModel @Inject constructor(
         }
     }
 
-    fun toggleFavoriteTrack(trackItem: DeezerTrackItem) {
+    fun toggleFavoriteTrack(trackItem: DeezerTrackItem, onConcluded: () -> Unit = {}) {
         viewModelScope.launch {
             val isFavorite = _state.value.favoriteTracksIdList.contains(trackItem.id)
             if (isFavorite) {
@@ -86,6 +91,7 @@ class MusicSearchViewModel @Inject constructor(
             }
             getFavoriteTrackIds()
             orderByFavoriteTracks()
+            onConcluded()
         }
     }
 
@@ -111,18 +117,23 @@ class MusicSearchViewModel @Inject constructor(
                 val tracks = searchResponse.body()?.data
                 val total = searchResponse.body()?.total ?: 0
                 if (tracks != null) {
+                    val newTracksList = if (page == 1) {
+                        tracks
+                    } else {
+                        _state.value.trackList + tracks.map {
+                            DeezerTrackItem(
+                                id = it.id,
+                                rank = it.rank,
+                                title = it.title,
+                                duration = it.duration,
+                                artist = it.artist,
+                                album = it.album
+                            )
+                        }
+                    }
                     _state.update { currentState ->
                         currentState.copy(
-                            trackList = tracks.map {
-                                DeezerTrackItem(
-                                    id = it.id,
-                                    rank = it.rank,
-                                    title = it.title,
-                                    duration = it.duration,
-                                    artist = it.artist,
-                                    album = it.album
-                                )
-                            },
+                            trackList = newTracksList,
                             totalResult = total
                         )
                     }
@@ -143,18 +154,6 @@ class MusicSearchViewModel @Inject constructor(
                 currentState.copy(searchPage = currentPage + 1)
             }
             searchMusic()
-        }
-    }
-
-    fun loadPreviousPage() {
-        viewModelScope.launch {
-            val currentPage = _state.value.searchPage
-            if (currentPage > 1) {
-                _state.update { currentState ->
-                    currentState.copy(searchPage = currentPage - 1)
-                }
-                searchMusic()
-            }
         }
     }
 

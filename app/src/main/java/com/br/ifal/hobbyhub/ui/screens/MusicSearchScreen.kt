@@ -13,8 +13,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowLeft
-import androidx.compose.material.icons.automirrored.filled.ArrowRight
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Search
@@ -26,9 +24,10 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,16 +41,25 @@ import com.br.ifal.hobbyhub.bottombars.MusicBottomBar
 import com.br.ifal.hobbyhub.enums.MusicSearchScreenTypeEnum
 import com.br.ifal.hobbyhub.models.DeezerTrackItem
 import com.br.ifal.hobbyhub.navigation.RoutesNames
+import com.br.ifal.hobbyhub.ui.viewmodel.FavoriteMusicViewModel
 import com.br.ifal.hobbyhub.ui.viewmodel.MusicSearchViewModel
-import kotlinx.coroutines.launch
 
 @Composable
 fun MusicSearchScreen(
     onNavigateTo: (RoutesNames) -> Unit,
-    musicViewModel: MusicSearchViewModel
+    musicViewModel: MusicSearchViewModel,
+    favoriteMusicViewModel: FavoriteMusicViewModel
 ) {
     val listState = rememberLazyListState()
-    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(listState) {
+        snapshotFlow { listState.firstVisibleItemIndex to listState.layoutInfo.totalItemsCount }
+            .collect { (firstVisibleItemIndex, totalItemsCount) ->
+                if (firstVisibleItemIndex + 5 >= totalItemsCount) {
+                    musicViewModel.loadNextPage()
+                }
+            }
+    }
 
     val uiState by musicViewModel.uiState.collectAsState()
 
@@ -76,23 +84,11 @@ fun MusicSearchScreen(
                         track = track,
                         isFavorite = isFavorite,
                         onFavoriteClick = {
-                            musicViewModel.toggleFavoriteTrack(track)
+                            musicViewModel.toggleFavoriteTrack(
+                                track
+                            ) { favoriteMusicViewModel.loadFavoriteTracks() }
+
                         }
-                    )
-                }
-                item {
-                    PageControls(
-                        onPreviousPage = {
-                            musicViewModel.loadPreviousPage()
-                            coroutineScope.launch { listState.scrollToItem(0) }
-                        },
-                        onNextPage = {
-                            musicViewModel.loadNextPage()
-                            coroutineScope.launch { listState.scrollToItem(0) }
-                        },
-                        isPreviousEnabled = uiState.searchPage > 1,
-                        isNextEnabled = uiState.totalResult > uiState.searchPage * 20,
-                        modifier = Modifier
                     )
                 }
             }
@@ -205,43 +201,6 @@ fun MusicSearchBar(
                     Text(text = screenType.displayName)
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun PageControls(
-    onPreviousPage: () -> Unit,
-    onNextPage: () -> Unit,
-    isPreviousEnabled: Boolean,
-    isNextEnabled: Boolean,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(8.dp),
-        horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceBetween
-    ) {
-        IconButton(
-            onClick = { onPreviousPage() },
-            enabled = isPreviousEnabled
-        ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Default.ArrowLeft,
-                contentDescription = "Previous Page",
-                modifier.size(48.dp)
-            )
-        }
-        IconButton(
-            onClick = { onNextPage() },
-            enabled = isNextEnabled
-        ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Default.ArrowRight,
-                contentDescription = "Next Page",
-                modifier.size(48.dp)
-            )
         }
     }
 }
