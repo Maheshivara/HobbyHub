@@ -31,14 +31,20 @@ abstract class DatabaseHelper : RoomDatabase() {
     abstract fun mangaDao(): MangaDao
 
     companion object {
+        @Volatile
+        private var INSTANCE: DatabaseHelper? = null
+
         fun getInstance(context: Context): DatabaseHelper {
-            return Room.databaseBuilder(
-                context,
-                DatabaseHelper::class.java,
-                "hobbies.db"
-            )
-            .fallbackToDestructiveMigration(true)
-            .build()
+            return INSTANCE ?: synchronized(this) {
+                INSTANCE ?: Room.databaseBuilder(
+                    context.applicationContext,
+                    DatabaseHelper::class.java,
+                    "hobbies.db"
+                )
+                .fallbackToDestructiveMigration(true)
+                .build()
+                .also { INSTANCE = it }
+            }
         }
     }
 }
