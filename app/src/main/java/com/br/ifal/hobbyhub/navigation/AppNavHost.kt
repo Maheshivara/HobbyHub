@@ -27,14 +27,16 @@ fun AppNavHost(navController: NavHostController, viewModelsProvider: ViewModelsP
         composable<RoutesNames.MusicSearchScreen> {
             MusicSearchScreen(
                 { routeName -> navController.navigate(routeName) },
-                viewModelsProvider.musicSearchViewModel
+                viewModelsProvider.musicSearchViewModel,
+                viewModelsProvider.favoriteMusicViewModel
             )
         }
 
         composable<RoutesNames.FavoriteMusicScreen> {
             FavoriteMusicScreen(
                 { routeName -> navController.navigate(routeName) },
-                viewModelsProvider.favoriteMusicViewModel
+                viewModelsProvider.favoriteMusicViewModel,
+                viewModelsProvider.musicSearchViewModel
             )
         }
 

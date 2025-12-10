@@ -32,17 +32,20 @@ import com.br.ifal.hobbyhub.bottombars.MusicBottomBar
 import com.br.ifal.hobbyhub.models.FavoriteMusicData
 import com.br.ifal.hobbyhub.navigation.RoutesNames
 import com.br.ifal.hobbyhub.ui.viewmodel.FavoriteMusicViewModel
+import com.br.ifal.hobbyhub.ui.viewmodel.MusicSearchViewModel
 
 @Composable
 
 fun FavoriteMusicScreen(
     onNavigateTo: (RoutesNames) -> Unit,
-    favoriteViewModel: FavoriteMusicViewModel
+    favoriteViewModel: FavoriteMusicViewModel,
+    musicSearchViewModel: MusicSearchViewModel
 ) {
 
     val uiState by favoriteViewModel.uiState.collectAsState()
 
     Scaffold(modifier = Modifier, bottomBar = { MusicBottomBar(onNavigateTo) }) { innerPadding ->
+
         LazyColumn(
             modifier = Modifier
                 .padding(innerPadding)
@@ -55,7 +58,7 @@ fun FavoriteMusicScreen(
                     modifier = Modifier,
                     track = track,
                     onRemoveClick = { trackToRemove ->
-                        favoriteViewModel.removeFromFavorites(trackToRemove.deezerId)
+                        favoriteViewModel.removeFromFavorites(trackToRemove.deezerId) { musicSearchViewModel.reloadFavoriteTracks() }
                     }
                 )
             }

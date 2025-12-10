@@ -35,10 +35,11 @@ class FavoriteMusicViewModel @Inject constructor(
         }
     }
 
-    fun removeFromFavorites(trackId: Long) {
+    fun removeFromFavorites(trackId: Long, onConcluded: () -> Unit = {}) {
         viewModelScope.launch {
             repository.removeFavoriteTrackById(trackId)
             loadFavoriteTracks()
+            onConcluded()
         }
     }
 }
