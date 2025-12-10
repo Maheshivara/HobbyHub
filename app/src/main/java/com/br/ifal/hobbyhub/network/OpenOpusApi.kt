@@ -5,6 +5,7 @@ import com.br.ifal.hobbyhub.models.OpenOpusWorkListResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 interface OpenOpusApi {
     @POST("dyn/work/random")
@@ -12,6 +13,6 @@ interface OpenOpusApi {
 
     @GET("composer/list/ids/{idList}.json")
     suspend fun getComposersByIds(
-        @retrofit2.http.Path("idList") idList: String
+        @Path("idList") idList: String
     ): Response<OpenOpusComposerDetailsResponse>
 }

@@ -26,7 +26,8 @@ class ClassicalRepository @Inject constructor(
             val workListResponse = response.body()
             if (workListResponse != null) {
                 val composersId = workListResponse.works.map { it.composer.id }.toSet()
-                val composersPicturesMap = getComposersPictures(composersId.toList())
+                val composersPicturesMap = getComposersPictures(composersId)
+
                 return workListResponse.works.map { work ->
                     ClassicalMusicEntity(
                         id = work.id,
@@ -41,8 +42,8 @@ class ClassicalRepository @Inject constructor(
         return emptyList()
     }
 
-    private suspend fun getComposersPictures(composersIdList: List<Int>): Map<Int, String> {
-        val composersIdString = composersIdList.joinToString(",")
+    private suspend fun getComposersPictures(composersIdSet: Set<Int>): Map<Int, String> {
+        val composersIdString = composersIdSet.joinToString(",")
         val composersResponse = openOpusApi.getComposersByIds(composersIdString)
         if (composersResponse.isSuccessful) {
             val body = composersResponse.body()
