@@ -62,6 +62,8 @@ fun MusicSearchScreen(
     }
 
     val uiState by musicViewModel.uiState.collectAsState()
+    val favoriteState by favoriteMusicViewModel.uiState.collectAsState()
+    val favoriteMusicIdList = favoriteState.favoriteTrackList.map { it.deezerId }
 
     Scaffold(modifier = Modifier, bottomBar = { MusicBottomBar(onNavigateTo) }) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
@@ -78,16 +80,15 @@ fun MusicSearchScreen(
             LazyColumn(modifier = Modifier, state = listState) {
                 items(uiState.trackList.size) { trackIndex ->
                     val track = uiState.trackList[trackIndex]
-                    val isFavorite = uiState.favoriteTracksIdList.contains(track.id)
+                    val isFavorite = favoriteMusicIdList.contains(track.id)
                     MusicInfoCard(
                         modifier = Modifier.fillMaxWidth(),
                         track = track,
                         isFavorite = isFavorite,
                         onFavoriteClick = {
-                            musicViewModel.toggleFavoriteTrack(
+                            favoriteMusicViewModel.toggleFavoriteTrack(
                                 track
-                            ) { favoriteMusicViewModel.loadFavoriteTracks() }
-
+                            )
                         }
                     )
                 }

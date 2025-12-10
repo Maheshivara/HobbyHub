@@ -2,6 +2,7 @@ package com.br.ifal.hobbyhub.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.br.ifal.hobbyhub.models.DeezerTrackItem
 import com.br.ifal.hobbyhub.repositories.MusicRepository
 import com.br.ifal.hobbyhub.ui.state.FavoriteMusicUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -40,6 +41,20 @@ class FavoriteMusicViewModel @Inject constructor(
             repository.removeFavoriteTrackById(trackId)
             loadFavoriteTracks()
             onConcluded()
+        }
+    }
+
+    fun toggleFavoriteTrack(track: DeezerTrackItem) {
+        viewModelScope.launch {
+            val isFavorite = _state.value.favoriteTrackList.find {
+                it.deezerId == track.id
+            }?.let { true } ?: false
+            if (isFavorite) {
+                repository.removeFavoriteTrackById(track.id)
+            } else {
+                repository.addFavoriteTrack(track)
+            }
+            loadFavoriteTracks()
         }
     }
 }

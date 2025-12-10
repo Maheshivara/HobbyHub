@@ -32,14 +32,12 @@ import com.br.ifal.hobbyhub.bottombars.MusicBottomBar
 import com.br.ifal.hobbyhub.models.FavoriteMusicData
 import com.br.ifal.hobbyhub.navigation.RoutesNames
 import com.br.ifal.hobbyhub.ui.viewmodel.FavoriteMusicViewModel
-import com.br.ifal.hobbyhub.ui.viewmodel.MusicSearchViewModel
 
 @Composable
 
 fun FavoriteMusicScreen(
     onNavigateTo: (RoutesNames) -> Unit,
     favoriteViewModel: FavoriteMusicViewModel,
-    musicSearchViewModel: MusicSearchViewModel
 ) {
 
     val uiState by favoriteViewModel.uiState.collectAsState()
@@ -58,7 +56,7 @@ fun FavoriteMusicScreen(
                     modifier = Modifier,
                     track = track,
                     onRemoveClick = { trackToRemove ->
-                        favoriteViewModel.removeFromFavorites(trackToRemove.deezerId) { musicSearchViewModel.reloadFavoriteTracks() }
+                        favoriteViewModel.removeFromFavorites(trackToRemove.deezerId)
                     }
                 )
             }

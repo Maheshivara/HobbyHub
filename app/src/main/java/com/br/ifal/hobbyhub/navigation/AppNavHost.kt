@@ -36,7 +36,6 @@ fun AppNavHost(navController: NavHostController, viewModelsProvider: ViewModelsP
             FavoriteMusicScreen(
                 { routeName -> navController.navigate(routeName) },
                 viewModelsProvider.favoriteMusicViewModel,
-                viewModelsProvider.musicSearchViewModel
             )
         }
 

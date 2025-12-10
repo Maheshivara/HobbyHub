@@ -46,52 +46,6 @@ class MusicSearchViewModel @Inject constructor(
                     }
                 }
             }
-            getFavoriteTrackIds()
-            orderByFavoriteTracks()
-        }
-    }
-
-    fun reloadFavoriteTracks() {
-        getFavoriteTrackIds()
-        orderByFavoriteTracks()
-    }
-
-    private fun getFavoriteTrackIds() {
-        viewModelScope.launch {
-            val favoriteIds = repository.getFavoriteTrackIdList()
-            _state.update { currentState ->
-                currentState.copy(
-                    favoriteTracksIdList = favoriteIds
-                )
-            }
-        }
-    }
-
-    private fun orderByFavoriteTracks() {
-        viewModelScope.launch {
-            val favoriteIds = repository.getFavoriteTrackIdList()
-            _state.update { currentState ->
-                val (favoriteTracks, nonFavoriteTracks) = currentState.trackList.partition {
-                    favoriteIds.contains(it.id)
-                }
-                currentState.copy(
-                    trackList = favoriteTracks + nonFavoriteTracks
-                )
-            }
-        }
-    }
-
-    fun toggleFavoriteTrack(trackItem: DeezerTrackItem, onConcluded: () -> Unit = {}) {
-        viewModelScope.launch {
-            val isFavorite = _state.value.favoriteTracksIdList.contains(trackItem.id)
-            if (isFavorite) {
-                repository.removeFavoriteTrackById(trackItem.id)
-            } else {
-                repository.addFavoriteTrack(trackItem)
-            }
-            getFavoriteTrackIds()
-            orderByFavoriteTracks()
-            onConcluded()
         }
     }
 
@@ -139,7 +93,6 @@ class MusicSearchViewModel @Inject constructor(
                     }
                 }
             }
-            orderByFavoriteTracks()
         }
     }
 
